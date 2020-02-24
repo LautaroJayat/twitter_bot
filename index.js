@@ -346,7 +346,7 @@ Twitter_Bot.prototype.uploadMedia = async function (file) {
         method: 'POST',
         data: { media_data: media }
     }
-    
+
     const token = {
         key: self.ACCESS_TOKEN,
         secret: self.ACCESS_TOKEN_SECRET,
@@ -371,7 +371,10 @@ Twitter_Bot.prototype.newTweetWithMedia = async function (status, file, options)
 
 
 
-
+// Instantiating and populating with bearer tokens
 let TB = new Twitter_Bot(configs);
 TB.init();
+
+// Preventing someone from modifying our keys
+Object.freeze(TB);
 module.exports = TB;
