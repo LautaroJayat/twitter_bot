@@ -4,6 +4,8 @@ A Twitter API client for the lazy generation
 
 ## Set Up
 
+* Run `npm install quick-twitter-bot`
+
 * Make a `.env` file with your app keys in your root directory, it should look like this:
 
     ```shell
@@ -13,7 +15,6 @@ A Twitter API client for the lazy generation
     ACCESS_TOKEN_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     ```
 
-* Run `npm install quick-twitter-bot`
 
 * Add the following lines at the top of your main file
 
