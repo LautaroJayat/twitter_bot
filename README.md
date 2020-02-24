@@ -78,7 +78,7 @@ TB.getRetweets('123456789123', options)
 ## To Do
 This is just a Quick Beta of the package.
 
-* Refactor with good OOP practices
+
 * Add all the API services
 * Remove OAuth dependency
 * Make Dotenv dependency optional
