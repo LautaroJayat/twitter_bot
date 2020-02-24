@@ -18,5 +18,9 @@
     "bot"
   ],
   "author": "https://github.com/LautaroJayat",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LautaroJayat/twitter_bot"
+  }
 }
