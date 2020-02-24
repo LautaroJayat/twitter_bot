@@ -1,0 +1,22 @@
+{
+  "name": "quick-twitter-bot",
+  "version": "1.0.0",
+  "description": "A Twitter API client for the lazy generation",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "oauth-1.0a": "^2.2.6",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "twitter",
+    "nodejs",
+    "bot"
+  ],
+  "author": "https://github.com/LautaroJayat",
+  "license": "MIT"
+}
