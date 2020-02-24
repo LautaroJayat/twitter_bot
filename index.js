@@ -7,6 +7,7 @@ const qs = require('querystring');
 const crypto = require('crypto');
 const fs = require('fs');
 
+// OAuth Object - This will be used to get our headers for the user auth
 const oauth = new Oauth({
     consumer: { key: process.env.CONSUMER_KEY, secret: process.env.CONSUMER_SECRET },
     signature_method: 'HMAC-SHA1',
@@ -18,10 +19,23 @@ const oauth = new Oauth({
     }
 })
 
+// A simple header to encode our strings
 async function URLencoder(object) {
     object = encodeURIComponent(object);
     object = await object.replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
     return object
+}
+
+// A promise to read files (use carefully, this isn't a stram)
+async function readFile(file) {
+    return new Promise(function (resolve, reject) {
+        fs.readFile(file, { encoding: 'base64' }, (err, data) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(data)
+        })
+    })
 }
 
 // Set Colors
@@ -30,7 +44,7 @@ let FgGreen = "\x1b[32m"
 let FgYellow = "\x1b[33m"
 let BgRed = "\x1b[41m"
 
-// Make A config Objects
+// Make A config Object
 var configs = {
     CONSUMER_KEY: process.env.CONSUMER_KEY,
     CONSUMER_SECRET: process.env.CONSUMER_SECRET,
@@ -120,160 +134,138 @@ Twitter_Bot.prototype._awaitToken = async function () {
     if (!this.token || this.token.errors) { await tokenCredentials }
 }
 
+// This is to generate our requests in further functions
+Twitter_Bot.prototype._makeRequest = async function (self, host, method, path, request_data, token, media) {
+
+    return new Promise(function (resolve, reject) {
+        const options = {
+            hostname: host,
+            port: 443,
+            path: path,
+            method: method,
+            headers:
+                !request_data
+                    ? { 'authorization': self.token.token_type + " " + self.token.access_token }
+                    : oauth.toHeader(oauth.authorize(request_data, token))
+        };
+
+        const req = https.request(options, (res) => {
+            //console.log('statusCode:', res.statusCode);
+            //console.log('headers:', res.headers);
+            let data = [];
+            res.on('data', (chunk) => {
+                data.push(chunk)
+            });
+            res.on('end', () => {
+                resolve(JSON.parse(Buffer.concat(data).toString()))
+            })
+        });
+
+        req.on('error', (e) => {
+            reject(e);
+        });
+
+
+        if (host === 'upload.twitter.com') {
+            req.setHeader('Content-Type', 'application/x-www-form-urlencoded');
+            req.write(qs.stringify({ media_data: media }))
+        }
+        req.end();
+    })
+
+
+}
+
+
+
+
 //
 // Get methods
 //
 
 // Search Twits methods
 Twitter_Bot.prototype.searchTweets = async function (query) {
+    if (typeof query !== 'object') {
+        self.error('Parameters werent provided in object format, instead got:', typeof query)
+        return console.trace();
+    }
+    if (!query.q) {
+        self.error('Missing query in the following object provided:', query)
+        return console.trace();
+    }
+
     await this._awaitToken()
+
     let self = this;
 
-    return new Promise(function (resolve, reject) {
-        if (typeof query !== 'object') {
-            self.error('Parameters werent provided in object format, instead got:', typeof query)
-            return console.trace();
-        }
-        if (!query.q) {
-            self.error('Missing query in the following object provided:', query)
-            return console.trace();
-        }
 
-
-        const options = {
-            hostname: 'api.twitter.com',
-            port: 443,
-            path: '/1.1/search/tweets.json?' + qs.stringify(query),
-            method: 'GET',
-            headers: {
-                'authorization': self.token.token_type + " " + self.token.access_token,
-
-            }
-        };
-
-        const req = https.request(options, (res) => {
-            //console.log('statusCode:', res.statusCode);
-            //console.log('headers:', res.headers);
-            let data = [];
-            res.on('data', (chunk) => {
-                data.push(chunk)
-            });
-            res.on('end', () => {
-                resolve(JSON.parse(Buffer.concat(data).toString()))
-            })
-        });
-
-        req.on('error', (e) => {
-            reject(e);
-        });
-
-        req.end();
-    })
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'GET',
+        '/1.1/search/tweets.json?' + qs.stringify(query)
+    )
 
 }
 
 // Get twit by ID
 Twitter_Bot.prototype.getTweet = async function (query) {
+    if (typeof query !== 'string') {
+        self.error('Parameters werent provided in string format, instead got:', query)
+        return console.trace();
+    }
+    if (!query) {
+        self.error('Missing query!')
+        return console.trace();
+    }
+
     await this._awaitToken()
+
     let self = this;
 
-    return new Promise(function (resolve, reject) {
-        if (typeof query !== 'string') {
-            self.error('Parameters werent provided in string format, instead got:', query)
-            return console.trace();
-        }
-        if (!query) {
-            self.error('Missing query!')
-            return console.trace();
-        }
-
-
-        const options = {
-            hostname: 'api.twitter.com',
-            port: 443,
-            path: '/1.1/statuses/show.json?' + qs.stringify({ id: query }),
-            method: 'GET',
-            headers: {
-                'authorization': self.token.token_type + " " + self.token.access_token,
-
-            }
-        };
-
-        const req = https.request(options, (res) => {
-            //console.log('statusCode:', res.statusCode);
-            //console.log('headers:', res.headers);
-            let data = [];
-            res.on('data', (chunk) => {
-                data.push(chunk)
-            });
-            res.on('end', () => {
-                resolve(JSON.parse(Buffer.concat(data).toString()))
-            })
-        });
-
-        req.on('error', (e) => {
-            reject(e);
-        });
-
-        req.end();
-    })
-
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'GET',
+        '/1.1/statuses/show.json?' + qs.stringify({ id: query })
+    )
 }
+
+
 
 // Get retweetes from one tweet
 Twitter_Bot.prototype.getRetweets = async function (query, params) {
+    if (typeof query !== 'string') {
+        self.error('Parameters werent provided in string format, instead got:', typeof query)
+        return console.trace();
+    }
+    if (!query) {
+        self.error('Missing query!')
+        return console.trace();
+    }
+    if (params && typeof params !== 'object') {
+        self.error('Type error, expected object as second argument but instead got', params)
+        return console.trace();
+    }
+    if (params) {
+        params = qs.stringify(params)
+    }
+
     await this._awaitToken()
+
     let self = this;
 
-    return new Promise(function (resolve, reject) {
-        if (typeof query !== 'string') {
-            self.error('Parameters werent provided in string format, instead got:', typeof query)
-            return console.trace();
-        }
-        if (!query) {
-            self.error('Missing query!')
-            return console.trace();
-        }
-        if (params && typeof params !== 'object') {
-            self.error('Type error, expected object as second argument but instead got', params)
-            return console.trace();
-        }
-        if (params) {
-            params = qs.stringify(params)
-        }
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'GET',
+        params ? `/1.1/statuses/retweets/${query}.json?${params}` : `/1.1/statuses/retweets/${query}.json`,
 
-
-        const options = {
-            hostname: 'api.twitter.com',
-            port: 443,
-            path: params ? `/1.1/statuses/retweets/${query}.json?${params}` : `/1.1/statuses/retweets/${query}.json`,
-            method: 'GET',
-            headers: {
-                'authorization': self.token.token_type + " " + self.token.access_token,
-
-            }
-        };
-
-        const req = https.request(options, (res) => {
-            //console.log('statusCode:', res.statusCode);
-            //console.log('headers:', res.headers);
-            let data = [];
-            res.on('data', (chunk) => {
-                data.push(chunk)
-            });
-            res.on('end', () => {
-                resolve(JSON.parse(Buffer.concat(data).toString('utf8')))
-            })
-        });
-
-        req.on('error', (e) => {
-            reject(e);
-        });
-
-        req.end();
-    })
+    )
 
 }
+
+
 
 
 
@@ -284,145 +276,98 @@ Twitter_Bot.prototype.getRetweets = async function (query, params) {
 
 // Post new tweet
 Twitter_Bot.prototype.newTweet = async function (status, twitterOptions) {
+    if (typeof status !== 'string') {
+        self.error('Parameters werent provided in string format, instead got:', typeof status)
+        return console.trace();
+    }
+    if (!status) {
+        self.error('Missing query!')
+        return console.trace();
+    }
+    if (twitterOptions && typeof twitterOptions !== 'object') {
+        self.error('Options werent provided in object format, instead got:', typeof twitterOptions)
+        return console.trace();
+    }
+    if (twitterOptions) {
+        encodedOptions = qs.stringify(twitterOptions);
+    }
+
+    status = await URLencoder(status)
+
     await this._awaitToken()
+
     let self = this;
-    console.log(twitterOptions)
-    return new Promise(async function (resolve, reject) {
-        if (typeof status !== 'string') {
-            self.error('Parameters werent provided in string format, instead got:', typeof status)
-            return console.trace();
-        }
-        if (!status) {
-            self.error('Missing query!')
-            return console.trace();
-        }
-        if (twitterOptions && typeof twitterOptions !== 'object') {
-            self.error('Options werent provided in object format, instead got:', typeof twitterOptions)
-            return console.trace();
-        }
-        if (twitterOptions) {
-            encodedOptions = qs.stringify(twitterOptions);
-        }
 
-        status = await URLencoder(status)
-        console.log(status)
+    const request_data = {
+        url: !twitterOptions ? `https://api.twitter.com/1.1/statuses/update.json?status=${status}` : `https://api.twitter.com/1.1/statuses/update.json?status=${status}&${encodedOptions}`,
+        method: 'POST',
+        data: !twitterOptions ? { status: status } : { status: status, ...twitterOptions }
+    }
 
-        const request_data = {
-            url: !twitterOptions ? `https://api.twitter.com/1.1/statuses/update.json?status=${status}` : `https://api.twitter.com/1.1/statuses/update.json?status=${status}&${encodedOptions}`,
-            method: 'POST',
-            data: !twitterOptions ? { status: status } : { status: status, ...twitterOptions }
-        }
-        const token = {
-            key: self.ACCESS_TOKEN,
-            secret: self.ACCESS_TOKEN_SECRET,
-        }
+    const token = {
+        key: self.ACCESS_TOKEN,
+        secret: self.ACCESS_TOKEN_SECRET,
+    }
 
-
-        console.log(oauth.toHeader(oauth.authorize(request_data, token)))
-
-        const options = {
-            hostname: 'api.twitter.com',
-            port: 443,
-            path: !twitterOptions ? `/1.1/statuses/update.json?status=${status}` : `/1.1/statuses/update.json?status=${status}&${encodedOptions}`,
-            method: 'POST',
-            headers: oauth.toHeader(oauth.authorize(request_data, token))
-        };
-
-        const req = https.request(options, (res) => {
-            console.log('statusCode:', res.statusCode);
-            //console.log('headers:', res.headers);
-            let data = [];
-            res.on('data', (chunk) => {
-                data.push(chunk)
-            });
-            res.on('end', () => {
-                resolve(JSON.parse(Buffer.concat(data).toString()))
-                console.log('end', self.status)
-            })
-        });
-
-        req.on('error', (e) => {
-            reject(e);
-        });
-
-        req.end();
-    })
-
-
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'POST',
+        !twitterOptions
+            ? `/1.1/statuses/update.json?status=${status}`
+            : `/1.1/statuses/update.json?status=${status}&${encodedOptions}`,
+        request_data,
+        token
+    )
 }
 
-// A promise to read files
-async function readFile(file) {
-    return new Promise(function (resolve, reject) {
-        fs.readFile(file, { encoding: 'base64' }, (err, data) => {
-            if (err) {
-                reject(err)
-            }
-            resolve(data)
-        })
-    })
-}
+
+
 
 // A function to upload images and retrive media
 Twitter_Bot.prototype.uploadMedia = async function (file) {
+    if (!file) {
+        self.error('You must provide a string with a file path!')
+        return console.trace();
+    }
+    if (typeof file !== 'string') {
+        self.error('You must provide a string with a file path! Instead got:', typeof file)
+        return console.trace();
+    }
+
     await this._awaitToken()
+
     let self = this;
+
     let media = await readFile(file);
 
-    return new Promise(async function (resolve, reject) {
+    const request_data = {
+        url: `https://upload.twitter.com/1.1/media/upload.json`,
+        method: 'POST',
+        data: { media_data: media }
+    }
+    
+    const token = {
+        key: self.ACCESS_TOKEN,
+        secret: self.ACCESS_TOKEN_SECRET,
+    }
 
-        const request_data = {
-            url: `https://upload.twitter.com/1.1/media/upload.json`,
-            method: 'POST',
-            data: { media_data: media }
-        }
-        const token = {
-            key: self.ACCESS_TOKEN,
-            secret: self.ACCESS_TOKEN_SECRET,
-        }
-
-
-        console.log(oauth.toHeader(oauth.authorize(request_data, token)))
-
-        const options = {
-            hostname: 'upload.twitter.com',
-            port: 443,
-            path: '/1.1/media/upload.json',
-            method: 'POST',
-            headers: oauth.toHeader(oauth.authorize(request_data, token))
-        };
-
-        const req = https.request(options, (res) => {
-            console.log('statusCode:', res.statusCode);
-            //console.log('headers:', res.headers);
-            let data = [];
-            res.on('data', (chunk) => {
-                data.push(chunk)
-            });
-            res.on('end', () => {
-                resolve(JSON.parse(Buffer.concat(data).toString()))
-                console.log('end')
-            })
-        });
-
-        req.on('error', (e) => {
-            reject(e);
-        });
-        req.setHeader('Content-Type', 'application/x-www-form-urlencoded')
-        req.write(qs.stringify({ media_data: media }))
-        req.end()
-
-    })
-
-
+    return await this._makeRequest(
+        self,
+        'upload.twitter.com',
+        'POST',
+        '/1.1/media/upload.json',
+        request_data,
+        token,
+        media
+    )
 }
 
-// A function to 
+// A function to tweet with images 
 Twitter_Bot.prototype.newTweetWithMedia = async function (status, file, options) {
     let { media_id_string } = await this.uploadMedia(file)
     return this.newTweet(status, { media_ids: media_id_string, ...options })
 }
-
 
 
 
