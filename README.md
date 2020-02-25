@@ -35,42 +35,75 @@ require('dotenv').config();
 const TB = require('quick-twitter-bot');
 //
 //
+
+
+
+
 //  Lets tweet something
 TB.newTweet('Hi from my Lazy twitter bot!', options)
     .then(response=>console.log(response));
-    //  The output of this promise is the actual response that the API provides, in JSON format.
-    //  The 'options' object should contain only the keys that the API provides
+//  The output of this promise is the actual response that the API provides,
+//  in JSON format.
+//  The 'options' object should contain only the keys that the API provides
 //
 //
 //
+
+
+
 //  Now lets post something with an image
 TB.newTweetWithMedia('Check my cool photo!', './image.jpg', options)
     .then(response=>console.log(response))
-    //  Twitter api server response in JSON format
-    //  The 'options' object should contain only the keys that the API provides
+//  Twitter api server response in JSON format
+//  The 'options' object should contain only the keys that the API provides
+//
+//
+//
 
-//
-//
-//
+
+
 //  Now lets search some tweets
 TB.search({q: '#javascript', count: 50, max_id: 123456})
     .then(response=>console.log(response))
-    //  The object provided should contain only the keys that the API provides
+//  The object provided should contain only the keys that the API provides
 //
 //
 //
+
+
+
 //  Now lets search a specific tweet
 TB.search('123456789123')
     .then(response=>console.log(response))
-    //  This method only allows a string containing the tweet id as argument
+//  This method only allows a string containing the tweet id as argument
 //
 //
 //
+
+
+
 //  Now lets search retweeters of a specific tweet
 TB.getRetweets('123456789123', options)
     .then(response=>console.log(response))
-    //  This method allows a string containing the tweet id as argument
-    //  and an object with the options that the API provides.
+//  This method allows a string containing the tweet id as argument
+//  and an object with the options that the API provides.
+
+
+
+//  Now lets look the statuses on someone time line
+TB.userTimeLine({screen_name: 'super_cool_user'})
+    .then(response=>console.log(response))
+//  This method allows an object containing all the options
+//  allowed in the statuses/user_timeline spec
+
+
+
+//  Now lets look to our own feed
+TB.homeTimeLine(options?)
+    .then(response=>console.log(response))
+//  This method allows an optional object
+//  containing all the optionsallowed 
+//  in the statuses/home_timeline spec
 
 
 ```

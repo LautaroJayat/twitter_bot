@@ -121,6 +121,9 @@ Twitter_Bot.prototype.success = function (string) {
 Twitter_Bot.prototype.init = async function () {
     if (!this.token) {
         this.token = await tokenCredentials;
+
+        // Preventing someone from modifying our keys
+        Object.freeze(TB);
         return this.success('Access tokens were retrived from server and stored in memory')
     } else {
         this.success('Access tokens are allready stored in memory')
@@ -165,7 +168,6 @@ Twitter_Bot.prototype._makeRequest = async function (self, host, method, path, r
             reject(e);
         });
 
-
         if (host === 'upload.twitter.com') {
             req.setHeader('Content-Type', 'application/x-www-form-urlencoded');
             req.write(qs.stringify({ media_data: media }))
@@ -185,6 +187,8 @@ Twitter_Bot.prototype._makeRequest = async function (self, host, method, path, r
 
 // Search Twits methods
 Twitter_Bot.prototype.searchTweets = async function (query) {
+    let self = this;
+
     if (typeof query !== 'object') {
         self.error('Parameters werent provided in object format, instead got:', typeof query)
         return console.trace();
@@ -196,7 +200,6 @@ Twitter_Bot.prototype.searchTweets = async function (query) {
 
     await this._awaitToken()
 
-    let self = this;
 
 
     return await this._makeRequest(
@@ -210,6 +213,8 @@ Twitter_Bot.prototype.searchTweets = async function (query) {
 
 // Get twit by ID
 Twitter_Bot.prototype.getTweet = async function (query) {
+    let self = this;
+
     if (typeof query !== 'string') {
         self.error('Parameters werent provided in string format, instead got:', query)
         return console.trace();
@@ -221,7 +226,6 @@ Twitter_Bot.prototype.getTweet = async function (query) {
 
     await this._awaitToken()
 
-    let self = this;
 
     return await this._makeRequest(
         self,
@@ -235,6 +239,8 @@ Twitter_Bot.prototype.getTweet = async function (query) {
 
 // Get retweetes from one tweet
 Twitter_Bot.prototype.getRetweets = async function (query, params) {
+    let self = this;
+
     if (typeof query !== 'string') {
         self.error('Parameters werent provided in string format, instead got:', typeof query)
         return console.trace();
@@ -253,13 +259,77 @@ Twitter_Bot.prototype.getRetweets = async function (query, params) {
 
     await this._awaitToken()
 
-    let self = this;
 
     return await this._makeRequest(
         self,
         'api.twitter.com',
         'GET',
-        params ? `/1.1/statuses/retweets/${query}.json?${params}` : `/1.1/statuses/retweets/${query}.json`,
+        params
+            ? `/1.1/statuses/retweets/${query}.json?${params}`
+            : `/1.1/statuses/retweets/${query}.json`,
+
+    )
+
+}
+
+// Search user timeline
+Twitter_Bot.prototype.userTimeLine = async function (query) {
+    let self = this;
+
+    if (typeof query !== 'object') {
+        self.error('Parameters werent provided in object format, instead got:', typeof query)
+        return console.trace();
+    }
+
+    await this._awaitToken()
+
+
+
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'GET',
+        '/1.1/statuses/user_timeline.json?' + qs.stringify(query)
+    )
+
+}
+
+// Search user timeline
+Twitter_Bot.prototype.homeTimeLine = async function (query) {
+    let self = this;
+
+    if (query && typeof query !== 'object') {
+        self.error('Parameters werent provided in object format, instead got:', typeof query)
+        return console.trace();
+    }
+
+    await this._awaitToken()
+
+    let _query = qs.stringify(query);
+
+    const request_data = {
+        url: !query
+            ? `https://api.twitter.com/1.1/statuses/home_timeline.json`
+            : `https://api.twitter.com/1.1/statuses/home_timeline.json?${_query}`,
+        method: 'GET',
+        data: query
+    }
+
+    const token = {
+        key: self.ACCESS_TOKEN,
+        secret: self.ACCESS_TOKEN_SECRET,
+    }
+
+
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'GET',
+        !query
+            ? `/1.1/statuses/home_timeline.json`
+            : `/1.1/statuses/home_timeline.json?${_query}`,
+        request_data,
+        token
 
     )
 
@@ -276,6 +346,8 @@ Twitter_Bot.prototype.getRetweets = async function (query, params) {
 
 // Post new tweet
 Twitter_Bot.prototype.newTweet = async function (status, twitterOptions) {
+    let self = this;
+
     if (typeof status !== 'string') {
         self.error('Parameters werent provided in string format, instead got:', typeof status)
         return console.trace();
@@ -296,7 +368,6 @@ Twitter_Bot.prototype.newTweet = async function (status, twitterOptions) {
 
     await this._awaitToken()
 
-    let self = this;
 
     const request_data = {
         url: !twitterOptions ? `https://api.twitter.com/1.1/statuses/update.json?status=${status}` : `https://api.twitter.com/1.1/statuses/update.json?status=${status}&${encodedOptions}`,
@@ -312,7 +383,7 @@ Twitter_Bot.prototype.newTweet = async function (status, twitterOptions) {
     return await this._makeRequest(
         self,
         'api.twitter.com',
-        'POST',
+        'GET',
         !twitterOptions
             ? `/1.1/statuses/update.json?status=${status}`
             : `/1.1/statuses/update.json?status=${status}&${encodedOptions}`,
@@ -326,6 +397,8 @@ Twitter_Bot.prototype.newTweet = async function (status, twitterOptions) {
 
 // A function to upload images and retrive media
 Twitter_Bot.prototype.uploadMedia = async function (file) {
+    let self = this;
+
     if (!file) {
         self.error('You must provide a string with a file path!')
         return console.trace();
@@ -337,7 +410,6 @@ Twitter_Bot.prototype.uploadMedia = async function (file) {
 
     await this._awaitToken()
 
-    let self = this;
 
     let media = await readFile(file);
 
@@ -375,6 +447,4 @@ Twitter_Bot.prototype.newTweetWithMedia = async function (status, file, options)
 let TB = new Twitter_Bot(configs);
 TB.init();
 
-// Preventing someone from modifying our keys
-Object.freeze(TB);
 module.exports = TB;
