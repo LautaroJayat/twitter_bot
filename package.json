@@ -1,6 +1,6 @@
 {
   "name": "quick-twitter-bot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A Twitter API client for the lazy generation",
   "main": "index.js",
   "dependencies": {

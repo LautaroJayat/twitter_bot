@@ -40,7 +40,7 @@ const TB = require('quick-twitter-bot');
 
 
 //  Lets tweet something
-TB.newTweet('Hi from my Lazy twitter bot!', options)
+TB.newTweet('Hi from my Lazy twitter bot!', options?)
     .then(response=>console.log(response));
 //  The output of this promise is the actual response that the API provides,
 //  in JSON format.
@@ -48,7 +48,6 @@ TB.newTweet('Hi from my Lazy twitter bot!', options)
 //
 //
 //
-
 
 
 //  Now lets post something with an image
@@ -59,6 +58,38 @@ TB.newTweetWithMedia('Check my cool photo!', './image.jpg', options)
 //
 //
 //
+
+
+//  Want to destroy that tweet?
+TB.destroyTweet('123456789123', options?)
+    .then(response=>console.log(response))
+//  This method only allows a string containing the tweet id as argument
+//  and an optional object that allows the status/retweet spec
+//
+//
+
+
+
+//  Want to retweet something?
+TB.reTweet('123456789123', options?)
+    .then(response=>console.log(response))
+//  This method only allows a string containing the tweet id as argument
+//  and an optional object that allows the status/retweet spec
+//
+//
+
+
+
+//  Want to destroy that retweet?
+TB.unReTweet('123456789123', options?)
+    .then(response=>console.log(response))
+//  This method only allows a string containing the tweet id as argument
+//  and an optional object that allows the status/retweet spec
+//
+//
+
+
+
 
 
 
@@ -81,12 +112,29 @@ TB.search('123456789123')
 //
 
 
+//  Now lets search only the ids of some of your tweets
+TB.getRetweets(options)
+    .then(response=>console.log(response))
+//  You MUST provide at least {id: 31321},
+//  with the id of one of your tweets
+//  the options that the API provides also are allowed.
+
+
 
 //  Now lets search retweeters of a specific tweet
-TB.getRetweets('123456789123', options)
+TB.reTweetersIds(options)
     .then(response=>console.log(response))
 //  This method allows a string containing the tweet id as argument
 //  and an object with the options that the API provides.
+
+
+
+//  Who have been tweeting you?
+TB.reTweetsOfMe(options?)
+    .then(response=>console.log(response))
+//  This method allows an optional object
+//  containing all the optionsallowed 
+//  in the statuses/home_timeline spec
 
 
 
@@ -106,7 +154,15 @@ TB.homeTimeLine(options?)
 //  in the statuses/home_timeline spec
 
 
+//  Now lets look at our mentions feed
+TB.mentionsTimeLine(options?)
+    .then(response=>console.log(response))
+//  This method allows an optional object
+//  containing all the optionsallowed 
+//  in the statuses/home_timeline spec
 ```
+
+
 
 
 ## To Do

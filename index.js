@@ -295,7 +295,7 @@ Twitter_Bot.prototype.userTimeLine = async function (query) {
 }
 
 // Search user timeline
-Twitter_Bot.prototype.homeTimeLine = async function (query) {
+Twitter_Bot.prototype.mentionsTimeLine = async function (query) {
     let self = this;
 
     if (query && typeof query !== 'object') {
@@ -309,8 +309,8 @@ Twitter_Bot.prototype.homeTimeLine = async function (query) {
 
     const request_data = {
         url: !query
-            ? `https://api.twitter.com/1.1/statuses/home_timeline.json`
-            : `https://api.twitter.com/1.1/statuses/home_timeline.json?${_query}`,
+            ? `https://api.twitter.com/1.1/statuses/mentions_timeline.json`
+            : `https://api.twitter.com/1.1/statuses/mentions_timeline.json?${_query}`,
         method: 'GET',
         data: query
     }
@@ -326,14 +326,99 @@ Twitter_Bot.prototype.homeTimeLine = async function (query) {
         'api.twitter.com',
         'GET',
         !query
-            ? `/1.1/statuses/home_timeline.json`
-            : `/1.1/statuses/home_timeline.json?${_query}`,
+            ? `/1.1/statuses/mentions_timeline.json`
+            : `/1.1/statuses/mentions_timeline.json?${_query}`,
         request_data,
         token
 
     )
 
 }
+
+// Search user timeline
+Twitter_Bot.prototype.reTweetOfMe = async function (query) {
+    let self = this;
+
+    if (query && typeof query !== 'object') {
+        self.error('Parameters werent provided in object format, instead got:', typeof query)
+        return console.trace();
+    }
+
+    await this._awaitToken()
+
+    let _query = qs.stringify(query);
+
+    const request_data = {
+        url: !query
+            ? `https://api.twitter.com/1.1/statuses/retweets_of_me.json`
+            : `https://api.twitter.com/1.1/statuses/retweets_of_me.json?${_query}`,
+        method: 'GET',
+        data: query
+    }
+
+    const token = {
+        key: self.ACCESS_TOKEN,
+        secret: self.ACCESS_TOKEN_SECRET,
+    }
+
+
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'GET',
+        !query
+            ? `/1.1/statuses/retweets_of_me.json`
+            : `/1.1/statuses/retweets_of_me.json?${_query}`,
+        request_data,
+        token
+
+    )
+
+}
+
+// Search user timeline
+Twitter_Bot.prototype.reTweetersIds = async function (query) {
+    let self = this;
+
+    if (typeof query !== 'object') {
+        self.error('Parameters werent provided in object format, instead got:', typeof query)
+        return console.trace();
+    }
+
+    if (!query.id) {
+        self.error('Must provide id in the query!')
+        return console.trace();
+    }
+
+    await this._awaitToken()
+
+    let _query = qs.stringify(query);
+
+    const request_data = {
+        url: `https://api.twitter.com/1.1/statuses/retweeters/ids.json?${_query}`,
+        method: 'GET',
+        data: query
+    }
+
+    const token = {
+        key: self.ACCESS_TOKEN,
+        secret: self.ACCESS_TOKEN_SECRET,
+    }
+
+
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'GET',
+        `/1.1/statuses/retweeters/ids.json?${_query}`,
+        request_data,
+        token
+
+    )
+
+}
+
+
 
 
 
@@ -383,7 +468,7 @@ Twitter_Bot.prototype.newTweet = async function (status, twitterOptions) {
     return await this._makeRequest(
         self,
         'api.twitter.com',
-        'GET',
+        'POST',
         !twitterOptions
             ? `/1.1/statuses/update.json?status=${status}`
             : `/1.1/statuses/update.json?status=${status}&${encodedOptions}`,
@@ -392,6 +477,151 @@ Twitter_Bot.prototype.newTweet = async function (status, twitterOptions) {
     )
 }
 
+// Post new tweet
+Twitter_Bot.prototype.reTweet = async function (status, twitterOptions) {
+    let self = this;
+
+    if (typeof status !== 'string') {
+        self.error('Parameters werent provided in string format, instead got:', typeof status)
+        return console.trace();
+    }
+    if (!status) {
+        self.error('Missing query!')
+        return console.trace();
+    }
+    if (twitterOptions && typeof twitterOptions !== 'object') {
+        self.error('Options werent provided in object format, instead got:', typeof twitterOptions)
+        return console.trace();
+    }
+    if (twitterOptions) {
+        encodedOptions = qs.stringify(twitterOptions);
+    }
+
+    status = await URLencoder(status)
+
+    await this._awaitToken()
+
+
+    const request_data = {
+        url: !twitterOptions ? `https://api.twitter.com/1.1/statuses/retweet/${status}.json` : `https://api.twitter.com/1.1/statuses/retweet/${status}.json?${encodedOptions}`,
+        method: 'POST',
+        data: !twitterOptions ? {} : twitterOptions
+    }
+
+    const token = {
+        key: self.ACCESS_TOKEN,
+        secret: self.ACCESS_TOKEN_SECRET,
+    }
+
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'POST',
+        !twitterOptions
+            ? `/1.1/statuses/retweet/${status}.json`
+            : `/1.1/statuses/retweet/${status}.json?${encodedOptions}`,
+        request_data,
+        token
+    )
+}
+
+// Post new tweet
+Twitter_Bot.prototype.destroyTweet = async function (status, twitterOptions) {
+    let self = this;
+
+    if (typeof status !== 'string') {
+        self.error('Parameters werent provided in string format, instead got:', typeof status)
+        return console.trace();
+    }
+    if (!status) {
+        self.error('Missing query!')
+        return console.trace();
+    }
+    if (twitterOptions && typeof twitterOptions !== 'object') {
+        self.error('Options werent provided in object format, instead got:', typeof twitterOptions)
+        return console.trace();
+    }
+    if (twitterOptions) {
+        encodedOptions = qs.stringify(twitterOptions);
+    }
+
+    status = await URLencoder(status)
+
+    await this._awaitToken()
+
+
+    const request_data = {
+        url: !twitterOptions ? `https://api.twitter.com/1.1/statuses/destroy/${status}.json` : `https://api.twitter.com/1.1/statuses/destroy/${status}.json?${encodedOptions}`,
+        method: 'POST',
+        data: !twitterOptions ? {} : twitterOptions
+    }
+
+    const token = {
+        key: self.ACCESS_TOKEN,
+        secret: self.ACCESS_TOKEN_SECRET,
+    }
+
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'POST',
+        !twitterOptions
+            ? `/1.1/statuses/destroy/${status}.json`
+            : `/1.1/statuses/destroy/${status}.json?${encodedOptions}`,
+        request_data,
+        token
+    )
+}
+
+
+
+// Unretweet
+Twitter_Bot.prototype.unReTweet = async function (status, twitterOptions) {
+    let self = this;
+
+    if (typeof status !== 'string') {
+        self.error('Parameters werent provided in string format, instead got:', typeof status)
+        return console.trace();
+    }
+    if (!status) {
+        self.error('Missing query!')
+        return console.trace();
+    }
+    if (twitterOptions && typeof twitterOptions !== 'object') {
+        self.error('Options werent provided in object format, instead got:', typeof twitterOptions)
+        return console.trace();
+    }
+    if (twitterOptions) {
+        encodedOptions = qs.stringify(twitterOptions);
+    }
+
+    status = await URLencoder(status)
+
+    await this._awaitToken()
+
+
+    const request_data = {
+        url: !twitterOptions ? `https://api.twitter.com/1.1/statuses/unretweet/${status}.json` : `https://api.twitter.com/1.1/statuses/unretweet/${status}.json?${encodedOptions}`,
+        method: 'POST',
+        data: !twitterOptions ? {} : twitterOptions
+    }
+
+    const token = {
+        key: self.ACCESS_TOKEN,
+        secret: self.ACCESS_TOKEN_SECRET,
+    }
+
+    return await this._makeRequest(
+        self,
+        'api.twitter.com',
+        'POST',
+        !twitterOptions
+            ? `/1.1/statuses/unretweet/${status}.json`
+            : `/1.1/statuses/unretweet/${status}.json?${encodedOptions}`,
+        request_data,
+        token
+    )
+}
 
 
 
@@ -440,6 +670,7 @@ Twitter_Bot.prototype.newTweetWithMedia = async function (status, file, options)
     let { media_id_string } = await this.uploadMedia(file)
     return this.newTweet(status, { media_ids: media_id_string, ...options })
 }
+
 
 
 
