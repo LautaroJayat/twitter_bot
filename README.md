@@ -1,10 +1,14 @@
 # Quick Twitter Bot
 
-A Twitter API client for the lazy generation
+A Twitter API client for the lazy generation.
 
-## Set Up
+Opinionated shorthands for the REST API.
+
+## Installing
 
 * Run `npm install quick-twitter-bot`
+
+## Set Up
 
 * Make a `.env` file with your app keys in your root directory, it should look like this:
 
@@ -25,7 +29,13 @@ A Twitter API client for the lazy generation
 
 * Now you are ready to go
 
-## Usage
+
+# Usage
+
+You only need to set up your .env file as it's shown at the begining of the docs. You don't even need to create the Twitter Bot instance, you just require the object with it's methods.
+
+**NOTE:** The output of all this promises is the actual response that the API provides, already parsed in JSON format.
+
 
 ```js
 //  First require your keys in the .env file
@@ -35,132 +45,274 @@ require('dotenv').config();
 const TB = require('quick-twitter-bot');
 //
 //
+```
 
 
+## `TB.newTweet(status, [options?])`
+This method allows to create a new Twit.
+
+**status**
+
+A string containing what you want to tweet.
+
+**options**
+
+The options object should contain only the keys that the API provides.
 
 
+```js
 //  Lets tweet something
 TB.newTweet('Hi from my Lazy twitter bot!', options?)
     .then(response=>console.log(response));
-//  The output of this promise is the actual response that the API provides,
-//  in JSON format.
-//  The 'options' object should contain only the keys that the API provides
-//
-//
-//
+```
+
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/post-statuses-update)
 
 
+------
+
+## TB.newTweetWithMedia(status, path, [options?])
+This method allows you to tweet and have an image in the tweet. The uploading process is managed behind the scenes by the library.
+
+**status**
+
+A string containing what you want to tweet.
+
+**path**
+
+A string the actual path that will be uploaded.
+
+**options**
+
+The options object should contain only the keys that the statuses/update API provides.
+
+
+```js
 //  Now lets post something with an image
-TB.newTweetWithMedia('Check my cool photo!', './image.jpg', options)
+TB.newTweetWithMedia('Check my cool photo!', './image.jpg', options?)
     .then(response=>console.log(response))
 //  Twitter api server response in JSON format
-//  The 'options' object should contain only the keys that the API provides
-//
-//
-//
+```
+
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/post-statuses-update)
+
+-------
+
+## TB.destroyTweet( id , [options?])
+This method allows you to destroy one of your tweets.
+
+**id**
+
+A string containing the id of the tweet.
+
+**options**
+
+The options object should contain only the keys that the API provides.
 
 
+```js
 //  Want to destroy that tweet?
 TB.destroyTweet('123456789123', options?)
     .then(response=>console.log(response))
-//  This method only allows a string containing the tweet id as argument
-//  and an optional object that allows the status/retweet spec
-//
-//
+```
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/post-statuses-destroy-id)
 
+-----------------
 
+## TB.reTweet( id, [options?])
+This methods allows you to retweet something you want.
 
+**id**
+
+A string containing the id of the tweet.
+
+**options**
+
+The options object should contain only the keys that the API provides.
+
+```js
 //  Want to retweet something?
 TB.reTweet('123456789123', options?)
     .then(response=>console.log(response))
-//  This method only allows a string containing the tweet id as argument
-//  and an optional object that allows the status/retweet spec
-//
-//
+```
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/post-statuses-retweet-id)
+
+---------------
+
+## TB.unReTweet('123456789123', [options?])
+This method allows you to undo one of your retweets.
+
+**id**
+
+A string containing the id of the tweet.
+
+**options**
+
+The options object should contain only the keys that the API provides.
 
 
-
+```js
 //  Want to destroy that retweet?
 TB.unReTweet('123456789123', options?)
     .then(response=>console.log(response))
-//  This method only allows a string containing the tweet id as argument
-//  and an optional object that allows the status/retweet spec
-//
-//
+```
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/post-statuses-unretweet-id)
+
+-----------
+
+## TB.searchTweets([options])
+
+This method allows you to use the search API.
+
+**options**
+
+The options object should contain only the keys that the API provides, and at least the **q** key 
+
+    { q: 'query'}
+
+in order to work correctly
 
 
-
-
-
-
+```js
 //  Now lets search some tweets
 TB.searchTweets({q: '#javascript', count: 50, max_id: 123456})
     .then(response=>console.log(response))
-//  The object provided should contain only the keys that the API provides
-//
-//
-//
+```
+
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets)
+
+----------
+
+## TB.getTweet( id )
+
+This methods allows you to get information about one specific tweet.
+
+**id**
+
+A string containing the id of the tweet.
 
 
-
+```js
 //  Now lets view a specific tweet
 TB.getTweet('123456789123')
     .then(response=>console.log(response))
-//  This method only allows a string containing the tweet id as argument
-//
-//
-//
+```
 
 
+----------
+
+## TB.getRetweets( id , [options?])
+This method retrives the retweets of a specific tweet.
+
+**id**
+
+A string containing the id of a specific string
+
+**options**
+
+The options object should contain only the keys that the API provides
+
+```js
 //  Now lets search only the ids of some of your tweets
-TB.getRetweets(options)
+TB.getRetweets('123456789', [options?])
     .then(response=>console.log(response))
-//  You MUST provide at least {id: 31321},
-//  with the id of one of your tweets
-//  the options that the API provides also are allowed.
+```
 
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/get-statuses-retweets-id)
 
+-----------
 
+## TB.reTweetersIds([options])
+This method allows you to get a list containing the retweeter's id of a specific tweet
+
+**options**
+
+An object containing at least the id of the tweet you want to get the retweeters from
+
+```js
 //  Now lets search retweeters of a specific tweet
-TB.reTweetersIds(options)
+TB.reTweetersIds({id: '12345789'})
     .then(response=>console.log(response))
-//  This method allows a string containing the tweet id as argument
-//  and an object with the options that the API provides.
+```
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/get-statuses-retweeters-ids)
 
+---------------------
 
+## TB.reTweetsOfMe([options?])
+This method allows you to know who has been retweeting you
 
+**options**
+
+This method allows an optional object with the options that the API provides.
+
+```js
 //  Who have been tweeting you?
 TB.reTweetsOfMe(options?)
     .then(response=>console.log(response))
 //  This method allows an optional object
 //  containing all the optionsallowed 
 //  in the statuses/home_timeline spec
+```
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/get-statuses-retweets_of_me)
 
+------------------
 
+## TB.userTimeLine(options)
+This method allows you to get information about a specific user timeline
 
+**options**
+
+You must provide at leas the screen name or the id of the user in the 'options' object
+
+```js
 //  Now lets look the statuses on someone time line
 TB.userTimeLine({screen_name: 'super_cool_user'})
     .then(response=>console.log(response))
 //  This method allows an object containing all the options
 //  allowed in the statuses/user_timeline spec
+```
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline)
 
+-------------------
 
+## TB.homeTimeLine([options?])
+This method allows you to get information about your own timeline
 
+**options**
+This method is simple, you don't need to provide options if you don't want ;)
+
+```js
 //  Now lets look to our own feed
 TB.homeTimeLine(options?)
     .then(response=>console.log(response))
 //  This method allows an optional object
 //  containing all the optionsallowed 
 //  in the statuses/home_timeline spec
+```
+
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-home_timeline)
 
 
+-----------------------
+
+## TB.mentionsTimeLine([options?])
+This method allows you to get information about your own timeline
+
+**options**
+Returns the 20 most recent mentions (Tweets containing a users's @screen_name) for the authenticating user.
+
+This method is simple, you don't need to provide options if you don't want ;)
+
+```js
 //  Now lets look at our mentions feed
 TB.mentionsTimeLine(options?)
     .then(response=>console.log(response))
-//  This method allows an optional object
-//  containing all the optionsallowed 
-//  in the statuses/home_timeline spec
 ```
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-mentions_timeline)
+
+-------------------
+
+
 
 
 
