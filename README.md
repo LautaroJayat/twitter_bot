@@ -94,7 +94,7 @@ TB.unReTweet('123456789123', options?)
 
 
 //  Now lets search some tweets
-TB.search({q: '#javascript', count: 50, max_id: 123456})
+TB.searchTweets({q: '#javascript', count: 50, max_id: 123456})
     .then(response=>console.log(response))
 //  The object provided should contain only the keys that the API provides
 //
@@ -103,8 +103,8 @@ TB.search({q: '#javascript', count: 50, max_id: 123456})
 
 
 
-//  Now lets search a specific tweet
-TB.search('123456789123')
+//  Now lets view a specific tweet
+TB.getTweet('123456789123')
     .then(response=>console.log(response))
 //  This method only allows a string containing the tweet id as argument
 //
