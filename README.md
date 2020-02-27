@@ -1,12 +1,15 @@
+
 # Quick Twitter Bot
 
 A Twitter API client for the lazy generation.
 
 Opinionated shorthands for the REST API.
 
+
 ## Installing
 
-* Run `npm install quick-twitter-bot`
+### **`npm install quick-twitter-bot`**
+
 
 ## Set Up
 
@@ -47,8 +50,45 @@ const TB = require('quick-twitter-bot');
 //
 ```
 
+# Methods
 
-## `TB.newTweet(status, [options?])`
+1. [TB.newTweet(status, [options?])](#tbnewtweetstatus-options)
+
+2. [TB.newTweetWithMedia(status, path, [options?])](#tbnewtweetwithmediastatus-path-options)
+
+3. [TB.destroyTweet( id , [options?])](#tbdestroytweet-id--options)
+
+4. [TB.reTweet( id, [options?])](#tbretweet-id-options)
+
+5. [TB.unReTweet( id, [options?])](#tbunretweet123456789123-options)
+
+6. [TB.searchTweets( [ options ] ) )](#tbsearchtweetsoptions)
+
+7. [TB.getTweet( id )](#tbgettweet-id-)
+
+8. [TB.getRetweets( id , [options?])](#tbgetretweets-id--options)
+
+9. [TB.reTweetersIds( [ options ] )](#tbretweetersidsoptions)
+
+10. [TB.reTweetsOfMe( [ options? ] )](#tbretweetsofmeoptions)
+
+11. [TB.userTimeLine( options )](#tbusertimelineoptions)
+
+12. [TB.homeTimeLine( [ options? ] )](#tbhometimelineoptions)
+
+13. [TB.mentionsTimeLine( [ options? ] )](#tbmentionstimelineoptions)
+
+14. [TB.shareMostRetweeted( [ query ] )](#tbsharemostretweetedquery)
+
+1. [TB.shareMostLiked( [ query ] )](#tbsharemostlikedquery)
+
+1. [TB.shareMostRetweetedOf( [ options ] )](#tbsharemostretweetedofoptions)
+
+1. [TB.shareMostLikedOf( [ options ] )](#tbsharemostlikedofoptions)
+
+
+
+## `TB.newTweet( status, [ options? ] )`
 This method allows to create a new Twit.
 
 **status**
@@ -71,7 +111,7 @@ TB.newTweet('Hi from my Lazy twitter bot!', options?)
 
 ------
 
-## TB.newTweetWithMedia(status, path, [options?])
+## TB.newTweetWithMedia( status, path, [ options? ] )
 This method allows you to tweet and have an image in the tweet. The uploading process is managed behind the scenes by the library.
 
 **status**
@@ -98,7 +138,7 @@ TB.newTweetWithMedia('Check my cool photo!', './image.jpg', options?)
 
 -------
 
-## TB.destroyTweet( id , [options?])
+## TB.destroyTweet( id , [ options? ] )
 This method allows you to destroy one of your tweets.
 
 **id**
@@ -119,7 +159,7 @@ TB.destroyTweet('123456789123', options?)
 
 -----------------
 
-## TB.reTweet( id, [options?])
+## TB.reTweet( id, [ options? ] )
 This methods allows you to retweet something you want.
 
 **id**
@@ -139,7 +179,7 @@ TB.reTweet('123456789123', options?)
 
 ---------------
 
-## TB.unReTweet('123456789123', [options?])
+## TB.unReTweet( id, [ options? ])
 This method allows you to undo one of your retweets.
 
 **id**
@@ -160,7 +200,7 @@ TB.unReTweet('123456789123', options?)
 
 -----------
 
-## TB.searchTweets([options])
+## TB.searchTweets( [ options ] )
 
 This method allows you to use the search API.
 
@@ -201,7 +241,7 @@ TB.getTweet('123456789123')
 
 ----------
 
-## TB.getRetweets( id , [options?])
+## TB.getRetweets( id , [ options? ] )
 This method retrives the retweets of a specific tweet.
 
 **id**
@@ -222,7 +262,7 @@ TB.getRetweets('123456789', [options?])
 
 -----------
 
-## TB.reTweetersIds([options])
+## TB.reTweetersIds( [ options ] )
 This method allows you to get a list containing the retweeter's id of a specific tweet
 
 **options**
@@ -238,7 +278,7 @@ TB.reTweetersIds({id: '12345789'})
 
 ---------------------
 
-## TB.reTweetsOfMe([options?])
+## TB.reTweetsOfMe( [ options? ] )
 This method allows you to know who has been retweeting you
 
 **options**
@@ -257,7 +297,7 @@ TB.reTweetsOfMe(options?)
 
 ------------------
 
-## TB.userTimeLine(options)
+## TB.userTimeLine( options ) 
 This method allows you to get information about a specific user timeline
 
 **options**
@@ -275,7 +315,7 @@ TB.userTimeLine({screen_name: 'super_cool_user'})
 
 -------------------
 
-## TB.homeTimeLine([options?])
+## TB.homeTimeLine( [ options? ] )
 This method allows you to get information about your own timeline
 
 **options**
@@ -296,7 +336,7 @@ TB.homeTimeLine(options?)
 
 -----------------------
 
-## TB.mentionsTimeLine([options?])
+## TB.mentionsTimeLine( [ options? ] )
 This method allows you to get information about your own timeline
 
 **options**
@@ -315,7 +355,7 @@ TB.mentionsTimeLine(options?)
 -------------------
 
 
-## TB.shareMostRetweeted([query])
+## TB.shareMostRetweeted( [ query ] )
 This method allows you to retweet the most retweeted tweet from the response of a specific query.
 
 **query**
@@ -336,7 +376,7 @@ TB.shareMostRetweeted({q: "#WomanInTech",  lang: 'en'})
 
 -------------------
 
-## TB.shareMostLiked([query])
+## TB.shareMostLiked( [ query ] )
 This method allows you to retweet the most liked tweet from the response of a specific query.
 
 **query**
@@ -357,7 +397,7 @@ TB.shareMostLiked({q: "#WomanInTech",  lang: 'en'})
 
 -------------------
 
-## TB.shareMostRetweetedOf([options])
+## TB.shareMostRetweetedOf( [ options ] )
 This method allows you to retweet the most retweeted tweet from the ones that are retrived from a user_timeline query.
 
 **Note:** in order to avoid retweeting unwanted content we are filtering the tweets using this conditions
@@ -380,7 +420,7 @@ TB.shareMostRetweetedOf(screen_name: 'noob_curious', exclude_replies: true)
 
 -------------------
 
-## TB.shareMostLikedOf([options])
+## TB.shareMostLikedOf( [ options ] )
 This method allows you to retweet the most liked tweet from the ones that are retrived from a user_timeline query.
 
 **Note:** in order to avoid retweeting unwanted content we are filtering the tweets using this conditions
