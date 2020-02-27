@@ -52,21 +52,21 @@ const TB = require('quick-twitter-bot');
 
 # Methods
 
-1. [TB.newTweet(status, [options?])](#tbnewtweet-status--options--)
+1. [TB.newTweet(status, [ options? ] )](#tbnewtweet-status--options--)
 
-2. [TB.newTweetWithMedia(status, path, [options?])](#tbnewtweetwithmedia-status-path--options--)
+2. [TB.newTweetWithMedia(status, path, [ options? ] )](#tbnewtweetwithmedia-status-path--options--)
 
-3. [TB.destroyTweet( id , [options?])](#tbdestroytweet-id---options--)
+3. [TB.destroyTweet( id , [ options? ] )](#tbdestroytweet-id---options--)
 
-4. [TB.reTweet( id, [options?])](#tbretweet-id--options--)
+4. [TB.reTweet( id, [ options? ] )](#tbretweet-id--options--)
 
-5. [TB.unReTweet( id, [options?])](#tbunretweet-id--options-)
+5. [TB.unReTweet( id, [ options? ] )](#tbunretweet-id--options-)
 
 6. [TB.searchTweets( [ options ] ) )](#tbsearchtweets--options--)
 
 7. [TB.getTweet( id )](#tbgettweet-id-)
 
-8. [TB.getRetweets( id , [options?])](#tbgetretweets-id---options--)
+8. [TB.getRetweets( id , [ options? ] )](#tbgetretweets-id---options--)
 
 9. [TB.reTweetersIds( [ options ] )](#tbretweetersids--options--)
 
@@ -412,7 +412,7 @@ You must provide at leas the screen name or the id of the user in the 'options' 
 
 ```js
 //  Now lets look at our mentions feed
-TB.shareMostRetweetedOf(screen_name: 'noob_curious', exclude_replies: true)
+TB.shareMostRetweetedOf({screen_name: 'noob_curious', exclude_replies: true})
     .then(response=>console.log(response))
 ```
 
@@ -435,7 +435,7 @@ You must provide at leas the screen name or the id of the user in the 'options' 
 
 ```js
 //  Now lets look at our mentions feed
-TB.shareMostLikedOf(screen_name: 'noob_curious', exclude_replies: true)
+TB.shareMostLikedOf({screen_name: 'noob_curious', exclude_replies: true})
     .then(response=>console.log(response))
 ```
 
