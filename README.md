@@ -52,39 +52,39 @@ const TB = require('quick-twitter-bot');
 
 # Methods
 
-1. [TB.newTweet(status, [options?])](#tbnewtweetstatus-options)
+1. [TB.newTweet(status, [options?])](#tbnewtweet-status--options--)
 
-2. [TB.newTweetWithMedia(status, path, [options?])](#tbnewtweetwithmediastatus-path-options)
+2. [TB.newTweetWithMedia(status, path, [options?])](#tbnewtweetwithmedia-status-path--options--)
 
-3. [TB.destroyTweet( id , [options?])](#tbdestroytweet-id--options)
+3. [TB.destroyTweet( id , [options?])](#tbdestroytweet-id---options--)
 
-4. [TB.reTweet( id, [options?])](#tbretweet-id-options)
+4. [TB.reTweet( id, [options?])](#tbretweet-id--options--)
 
-5. [TB.unReTweet( id, [options?])](#tbunretweet123456789123-options)
+5. [TB.unReTweet( id, [options?])](#tbunretweet-id--options-)
 
-6. [TB.searchTweets( [ options ] ) )](#tbsearchtweetsoptions)
+6. [TB.searchTweets( [ options ] ) )](#tbsearchtweets--options--)
 
 7. [TB.getTweet( id )](#tbgettweet-id-)
 
-8. [TB.getRetweets( id , [options?])](#tbgetretweets-id--options)
+8. [TB.getRetweets( id , [options?])](#tbgetretweets-id---options--)
 
-9. [TB.reTweetersIds( [ options ] )](#tbretweetersidsoptions)
+9. [TB.reTweetersIds( [ options ] )](#tbretweetersids--options--)
 
-10. [TB.reTweetsOfMe( [ options? ] )](#tbretweetsofmeoptions)
+10. [TB.reTweetsOfMe( [ options? ] )](#tbretweetsofme--options--)
 
-11. [TB.userTimeLine( options )](#tbusertimelineoptions)
+11. [TB.userTimeLine( options )](#tbusertimeline-options-)
 
-12. [TB.homeTimeLine( [ options? ] )](#tbhometimelineoptions)
+12. [TB.homeTimeLine( [ options? ] )](#tbhometimeline--options--)
 
-13. [TB.mentionsTimeLine( [ options? ] )](#tbmentionstimelineoptions)
+13. [TB.mentionsTimeLine( [ options? ] )](#tbmentionstimeline--options--)
 
-14. [TB.shareMostRetweeted( [ query ] )](#tbsharemostretweetedquery)
+14. [TB.shareMostRetweeted( [ query ] )](#tbsharemostretweeted--query--)
 
-1. [TB.shareMostLiked( [ query ] )](#tbsharemostlikedquery)
+1. [TB.shareMostLiked( [ query ] )](#tbsharemostliked--query--)
 
-1. [TB.shareMostRetweetedOf( [ options ] )](#tbsharemostretweetedofoptions)
+1. [TB.shareMostRetweetedOf( [ options ] )](#tbsharemostretweetedof--options--)
 
-1. [TB.shareMostLikedOf( [ options ] )](#tbsharemostlikedofoptions)
+1. [TB.shareMostLikedOf( [ options ] )](#tbsharemostlikedof--options--)
 
 
 
