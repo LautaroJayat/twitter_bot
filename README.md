@@ -279,6 +279,7 @@ TB.userTimeLine({screen_name: 'super_cool_user'})
 This method allows you to get information about your own timeline
 
 **options**
+
 This method is simple, you don't need to provide options if you don't want ;)
 
 ```js
@@ -299,6 +300,7 @@ TB.homeTimeLine(options?)
 This method allows you to get information about your own timeline
 
 **options**
+
 Returns the 20 most recent mentions (Tweets containing a users's @screen_name) for the authenticating user.
 
 This method is simple, you don't need to provide options if you don't want ;)
@@ -312,6 +314,92 @@ TB.mentionsTimeLine(options?)
 
 -------------------
 
+
+## TB.shareMostRetweeted([query])
+This method allows you to retweet the most retweeted tweet from the response of a specific query.
+
+**query**
+
+The query object should contain only the keys that the API provides, and at least the **q** key 
+
+    { q: 'query'}
+
+in order to work correctly
+
+```js
+//  Now lets look at our mentions feed
+TB.shareMostRetweeted({q: "#WomanInTech",  lang: 'en'})
+    .then(response=>console.log(response))
+```
+
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets)
+
+-------------------
+
+## TB.shareMostLiked([query])
+This method allows you to retweet the most liked tweet from the response of a specific query.
+
+**query**
+
+The query object should contain only the keys that the API provides, and at least the **q** key 
+
+    { q: 'query'}
+
+in order to work correctly
+
+```js
+//  Now lets look at our mentions feed
+TB.shareMostLiked({q: "#WomanInTech",  lang: 'en'})
+    .then(response=>console.log(response))
+```
+
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets)
+
+-------------------
+
+## TB.shareMostRetweetedOf([options])
+This method allows you to retweet the most retweeted tweet from the ones that are retrived from a user_timeline query.
+
+**Note:** in order to avoid retweeting unwanted content we are filtering the tweets using this conditions
+
+`tweet.is_quoted_status === false && tweet.in_reply_to_status_id === null`
+
+
+**options**
+
+You must provide at leas the screen name or the id of the user in the 'options' object
+
+
+```js
+//  Now lets look at our mentions feed
+TB.shareMostRetweetedOf(screen_name: 'noob_curious', exclude_replies: true)
+    .then(response=>console.log(response))
+```
+
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline)
+
+-------------------
+
+## TB.shareMostLikedOf([options])
+This method allows you to retweet the most liked tweet from the ones that are retrived from a user_timeline query.
+
+**Note:** in order to avoid retweeting unwanted content we are filtering the tweets using this conditions
+
+`tweet.is_quoted_status === false && tweet.in_reply_to_status_id === null`
+
+
+**options**
+
+You must provide at leas the screen name or the id of the user in the 'options' object
+
+
+```js
+//  Now lets look at our mentions feed
+TB.shareMostLikedOf(screen_name: 'noob_curious', exclude_replies: true)
+    .then(response=>console.log(response))
+```
+
+[Read more about the options.](https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline)
 
 
 

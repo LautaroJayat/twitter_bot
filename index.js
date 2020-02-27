@@ -673,6 +673,71 @@ Twitter_Bot.prototype.newTweetWithMedia = async function (status, file, options)
 
 
 
+// A function that first search a query and then retweets the most retweeted
+Twitter_Bot.prototype.shareMostRetweeted = async function (query) {
+    let tweets = await this.searchTweets(query);
+    let max = 0;
+    let index = 0;
+
+    for (tweet of tweets.statuses) {
+        if (tweet.retweet_count > max) {
+            max = tweet.retweet_count
+            index = tweets.statuses.indexOf(tweet);
+        }
+    }
+
+    return this.reTweet(tweets.statuses[index].id_str)
+}
+
+// A function that first searchs in someone timeline and then retweets the most retweeted
+Twitter_Bot.prototype.shareMostRetweetedOf = async function (options) {
+    let tweets = await this.userTimeLine(options);
+    let max = 0;
+    let index = 0;
+    for (tweet of tweets) {
+        if (tweet.retweet_count > max && tweet.is_quoted_status === false && tweet.in_reply_to_status_id === null) {
+            max = tweet.retweet_count;
+            index = tweets.indexOf(tweet);
+        }
+    }
+
+    this.reTweet(tweets[index].id_str);
+    return
+}
+
+// A function that first search a query and then retweets the most liked
+Twitter_Bot.prototype.shareMostLiked = async function (query) {
+    let tweets = await this.searchTweets(query);
+    let max = 0;
+    let index = 0;
+    for (tweet of tweets.statuses) {
+        if (tweet.favorite_count > max) {
+            max = tweet.favorite_count;
+            index = tweets.statuses.indexOf(tweet);
+        }
+    }
+    return this.reTweet(tweets.statuses[index].id_str)
+}
+
+// A function that first searchs in someone timeline and then retweets the most liked
+Twitter_Bot.prototype.shareMostLikedOf = async function (options) {
+    let tweets = await this.userTimeLine(options);
+    let max = 0;
+    let index = 0;
+    for (tweet of tweets) {
+        if (tweet.favorite_count > max && tweet.is_quoted_status === false && tweet.in_reply_to_status_id === null) {
+            max = tweet.favorite_count;
+            index = tweets.indexOf(tweet);
+        }
+    }
+
+    this.reTweet(tweets[index].id_str);
+    return
+}
+
+
+
+
 
 // Instantiating and populating with bearer tokens
 let TB = new Twitter_Bot(configs);
