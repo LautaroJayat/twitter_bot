@@ -1,6 +1,6 @@
 {
   "name": "quick-twitter-bot",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A Twitter API client for the lazy generation",
   "main": "index.js",
   "dependencies": {
@@ -21,7 +21,6 @@
     "bot",
     "API",
     "client"
-
   ],
   "author": "https://github.com/LautaroJayat",
   "license": "MIT",
