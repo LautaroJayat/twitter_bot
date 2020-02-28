@@ -12,7 +12,8 @@
     "jest": "^25.1.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "node post_install.js"
   },
   "keywords": [
     "twitter",
