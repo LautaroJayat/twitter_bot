@@ -1,6 +1,6 @@
 {
   "name": "quick-twitter-bot",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "A Twitter API client for the lazy generation",
   "main": "index.js",
   "dependencies": {
@@ -8,11 +8,8 @@
     "oauth-1.0a": "^2.2.6",
     "request": "^2.88.2"
   },
-  "devDependencies": {
-    "jest": "^25.1.0"
-  },
+  "devDependencies": {},
   "scripts": {
-    "test": "jest",
     "postinstall": "node post_install.js"
   },
   "keywords": [
