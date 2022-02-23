@@ -1,4 +1,6 @@
 const https = require('https');
+const qs = require('querystring');
+
 
 // Promise helper to retrive OAuth bearrer token
 const tokenCredentials = new Promise((resolve, reject) => {

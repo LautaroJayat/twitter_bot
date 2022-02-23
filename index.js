@@ -1,9 +1,7 @@
 // requiring neccessary modueles
 // requiring neccessary modueles
 const Oauth = require('oauth-1.0a');
-const qs = require('querystring');
 const crypto = require('crypto');
-const fs = require('fs');
 const { tokenCredentials } = require('./utils/utils')
 const logger = require('./logger')
 const getMethods = requre('./requests/getMethods')
@@ -61,9 +59,17 @@ Twitter_Bot.prototype._awaitToken = async function () {
     if (!this.token || this.token.errors) { await tokenCredentials }
 }
 
-
 Object.assign(Twitter_Bot.prorotype, logger)
 Object.assign(Twitter_Bot.prorotype, getMethods)
 Object.assign(Twitter_Bot.prorotype, postMethods)
 
-module.exports = { Twitter_Bot, makeConfigs };
+
+const makeTwitterBot = (configs) => {
+    return new Twitter_Bot(makeConfigs(configs))
+}
+
+module.exports = {
+    Twitter_Bot,
+    makeConfigs,
+    makeTwitterBot
+};

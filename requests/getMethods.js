@@ -1,3 +1,5 @@
+const qs = require('querystring');
+
 async function searchTweets(query) {
     let self = this;
 

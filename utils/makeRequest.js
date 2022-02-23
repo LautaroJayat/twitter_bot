@@ -1,4 +1,6 @@
 const https = require('https');
+const qs = require('querystring');
+
 
 async function _makeRequest(self, host, method, path, request_data, token, media) {
     return new Promise(function (resolve, reject) {

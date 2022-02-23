@@ -1,3 +1,4 @@
+const qs = require('querystring');
 const { _makeRequest, URLencoder, readFile } = require('../utils/utils')
 
 async function newTweet(status, twitterOptions) {
